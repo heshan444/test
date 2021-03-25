@@ -1,0 +1,1550 @@
+{
+  "openapi" : "3.0.0",
+  "info" : {
+    "title" : "Shiji Pay@Table Proxy API",
+    "description" : "This is a RESTFul API for PNG Pay@Table - Version 1.0.11. Change Logs are available under \"Documentation\" section.\n1.0.4:  -  1. Add getPrintCheck method.  2. Add getLogo method.  3. Add taxs list in check details. 4. Add posMerId and posTerId\n1.0.5:  -  1. Add getConfiguration method.  2. Update signature algorithm for post transaction.  3. Add description for message signature algorithm. 4. Add enableSurcharge\n1.0.6:  -  1. Add checkOpenEmpId, checkOpenTime, checkCloseTime, checkOpenStationCode, guests in check details.\n1.0.7:  -  1. Change cardType to optional. 2. Rename paymentTotalAmt to paidTotalAmt 3. Rename serviceAmt to svcTotalAmt 4. Add surchargeAmt\n1.0.8:  -  1. Add apiValidation method. 2. Add posMerId and posRvcId in each method.\n1.0.9:  -  1. Add checkStatus in check details. 2. Remove RvcInfo from check details, RvcInfo only exists in getPrintCheck details. 3. Add maskedPan/tipAmt/surchargeAmt in check payment list. 4. Add x-spat-reUpload in header \n1.0.10: -  1. Add txnAmt in check payment node. 2. Modify checkStatus value. Opened/Closed/Locked \n1.0.11: -  1. Add receiptType in method getPrintCheck and return 3 types of receipt:0-Check details.1-Formated.2-Print lines. Default 0.;\n",
+    "contact" : { },
+    "version" : "1.0"
+  },
+  "paths" : {
+    "/V2/merchants/{merId}/rvcs/{rvcId}/userValidation" : {
+      "post" : {
+        "tags" : [ "Admin Functions" ],
+        "summary" : "User Validation",
+        "description" : "Authenticate user with provided operator and password.",
+        "operationId" : "UserValidation",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/terminalId"
+        }, {
+          "$ref" : "#/components/parameters/api"
+        }, {
+          "$ref" : "#/components/parameters/timestamp"
+        }, {
+          "$ref" : "#/components/parameters/reqTrace"
+        }, {
+          "$ref" : "#/components/parameters/posMerId"
+        }, {
+          "$ref" : "#/components/parameters/posRvcId"
+        }, {
+          "$ref" : "#/components/parameters/sign"
+        }, {
+          "$ref" : "#/components/parameters/bearer"
+        }, {
+          "$ref" : "#/components/parameters/merId"
+        }, {
+          "$ref" : "#/components/parameters/rvcId"
+        } ],
+        "requestBody" : {
+          "description" : "",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UserValidationRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "headers" : {
+              "Connection" : {
+                "content" : {
+                  "text/plain" : {
+                    "schema" : {
+                      "type" : "string"
+                    },
+                    "example" : "keep-alive"
+                  }
+                }
+              },
+              "Date" : {
+                "content" : {
+                  "text/plain" : {
+                    "schema" : {
+                      "type" : "string"
+                    },
+                    "example" : "Fri, 07 Sep 2018 16:41:08 GMT"
+                  }
+                }
+              },
+              "Transfer-Encoding" : {
+                "content" : {
+                  "text/plain" : {
+                    "schema" : {
+                      "type" : "string"
+                    },
+                    "example" : "chunked"
+                  }
+                }
+              }
+            },
+            "content" : {
+              "application/json;charset=UTF-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserValidationResponse"
+                }
+              }
+            }
+          }
+        },
+        "deprecated" : false,
+        "servers" : [ {
+          "url" : "http://example.com/api",
+          "variables" : { }
+        } ]
+      }
+    },
+    "/V2/merchants/{merId}/rvcs/{rvcId}/userValidationByEmplCardData" : {
+      "post" : {
+        "tags" : [ "Admin Functions" ],
+        "summary" : "User Validation By Employee Card Data",
+        "description" : "Authenticate user with provided operator and password.",
+        "operationId" : "UserValidationByEmployeeCardData",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/terminalId"
+        }, {
+          "$ref" : "#/components/parameters/api"
+        }, {
+          "$ref" : "#/components/parameters/timestamp"
+        }, {
+          "$ref" : "#/components/parameters/reqTrace"
+        }, {
+          "$ref" : "#/components/parameters/posMerId"
+        }, {
+          "$ref" : "#/components/parameters/posRvcId"
+        }, {
+          "$ref" : "#/components/parameters/sign"
+        }, {
+          "$ref" : "#/components/parameters/bearer"
+        }, {
+          "$ref" : "#/components/parameters/merId"
+        }, {
+          "$ref" : "#/components/parameters/rvcId"
+        } ],
+        "requestBody" : {
+          "description" : "",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UserValidationByEmployeeCardDataRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "headers" : {
+              "Connection" : {
+                "content" : {
+                  "text/plain" : {
+                    "schema" : {
+                      "type" : "string"
+                    },
+                    "example" : "keep-alive"
+                  }
+                }
+              },
+              "Date" : {
+                "content" : {
+                  "text/plain" : {
+                    "schema" : {
+                      "type" : "string"
+                    },
+                    "example" : "Fri, 07 Sep 2018 16:41:08 GMT"
+                  }
+                }
+              },
+              "Transfer-Encoding" : {
+                "content" : {
+                  "text/plain" : {
+                    "schema" : {
+                      "type" : "string"
+                    },
+                    "example" : "chunked"
+                  }
+                }
+              }
+            },
+            "content" : {
+              "application/json;charset=UTF-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserValidationByEmployeeCardDataResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/V2/merchants/{merId}/rvcs/{rvcId}/apiValidation" : {
+      "get" : {
+        "tags" : [ "Admin Functions" ],
+        "summary" : "API validation",
+        "description" : "API validation",
+        "operationId" : "apiValidation",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/terminalId"
+        }, {
+          "$ref" : "#/components/parameters/api"
+        }, {
+          "$ref" : "#/components/parameters/timestamp"
+        }, {
+          "$ref" : "#/components/parameters/reqTrace"
+        }, {
+          "$ref" : "#/components/parameters/posMerId"
+        }, {
+          "$ref" : "#/components/parameters/posRvcId"
+        }, {
+          "$ref" : "#/components/parameters/sign"
+        }, {
+          "$ref" : "#/components/parameters/bearer"
+        }, {
+          "$ref" : "#/components/parameters/operator"
+        }, {
+          "$ref" : "#/components/parameters/password"
+        }, {
+          "$ref" : "#/components/parameters/reUpload"
+        }, {
+          "$ref" : "#/components/parameters/merId"
+        }, {
+          "$ref" : "#/components/parameters/rvcId"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "headers" : {
+              "Connection" : {
+                "content" : {
+                  "text/plain" : {
+                    "schema" : {
+                      "type" : "string"
+                    },
+                    "example" : "keep-alive"
+                  }
+                }
+              },
+              "Date" : {
+                "content" : {
+                  "text/plain" : {
+                    "schema" : {
+                      "type" : "string"
+                    },
+                    "example" : "Fri, 07 Sep 2018 16:41:08 GMT"
+                  }
+                }
+              },
+              "Transfer-Encoding" : {
+                "content" : {
+                  "text/plain" : {
+                    "schema" : {
+                      "type" : "string"
+                    },
+                    "example" : "chunked"
+                  }
+                }
+              }
+            },
+            "content" : {
+              "application/json;charset=UTF-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ApiValidationResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/V2/merchants/{merId}/rvcs/{rvcId}/getConfiguration" : {
+      "get" : {
+        "tags" : [ "Admin Functions" ],
+        "summary" : "Get Configuration",
+        "description" : "Get Configuration",
+        "operationId" : "GetConfiguration",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/terminalId"
+        }, {
+          "$ref" : "#/components/parameters/api"
+        }, {
+          "$ref" : "#/components/parameters/timestamp"
+        }, {
+          "$ref" : "#/components/parameters/reqTrace"
+        }, {
+          "$ref" : "#/components/parameters/posMerId"
+        }, {
+          "$ref" : "#/components/parameters/posRvcId"
+        }, {
+          "$ref" : "#/components/parameters/sign"
+        }, {
+          "$ref" : "#/components/parameters/bearer"
+        }, {
+          "$ref" : "#/components/parameters/operator"
+        }, {
+          "$ref" : "#/components/parameters/password"
+        }, {
+          "$ref" : "#/components/parameters/reUpload"
+        }, {
+          "$ref" : "#/components/parameters/merId"
+        }, {
+          "$ref" : "#/components/parameters/rvcId"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "headers" : {
+              "Connection" : {
+                "content" : {
+                  "text/plain" : {
+                    "schema" : {
+                      "type" : "string"
+                    },
+                    "example" : "keep-alive"
+                  }
+                }
+              },
+              "Date" : {
+                "content" : {
+                  "text/plain" : {
+                    "schema" : {
+                      "type" : "string"
+                    },
+                    "example" : "Fri, 07 Sep 2018 16:41:08 GMT"
+                  }
+                }
+              },
+              "Transfer-Encoding" : {
+                "content" : {
+                  "text/plain" : {
+                    "schema" : {
+                      "type" : "string"
+                    },
+                    "example" : "chunked"
+                  }
+                }
+              }
+            },
+            "content" : {
+              "application/json;charset=UTF-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetConfigurationResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/V2/merchants/{merId}/rvcs/{rvcId}/tables/{tableNo}/checks/{checkNo}/getPrintCheck" : {
+      "get" : {
+        "tags" : [ "Get Data Functions" ],
+        "description" : "Get the check details to print",
+        "operationId" : "getPrintCheck",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/terminalId"
+        }, {
+          "$ref" : "#/components/parameters/api"
+        }, {
+          "$ref" : "#/components/parameters/timestamp"
+        }, {
+          "$ref" : "#/components/parameters/reqTrace"
+        }, {
+          "$ref" : "#/components/parameters/posMerId"
+        }, {
+          "$ref" : "#/components/parameters/posRvcId"
+        }, {
+          "$ref" : "#/components/parameters/sign"
+        }, {
+          "$ref" : "#/components/parameters/bearer"
+        }, {
+          "$ref" : "#/components/parameters/operator"
+        }, {
+          "$ref" : "#/components/parameters/password"
+        }, {
+          "$ref" : "#/components/parameters/receiptType"
+        }, {
+          "$ref" : "#/components/parameters/merId"
+        }, {
+          "$ref" : "#/components/parameters/rvcId"
+        }, {
+          "$ref" : "#/components/parameters/tableNo"
+        }, {
+          "$ref" : "#/components/parameters/checkNo"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "",
+            "headers" : {
+              "Connection" : {
+                "content" : {
+                  "text/plain" : {
+                    "schema" : {
+                      "type" : "string"
+                    },
+                    "example" : "keep-alive"
+                  }
+                }
+              },
+              "Date" : {
+                "content" : {
+                  "text/plain" : {
+                    "schema" : {
+                      "type" : "string"
+                    },
+                    "example" : "Fri, 07 Sep 2018 16:41:08 GMT"
+                  }
+                }
+              },
+              "Transfer-Encoding" : {
+                "content" : {
+                  "text/plain" : {
+                    "schema" : {
+                      "type" : "string"
+                    },
+                    "example" : "chunked"
+                  }
+                }
+              }
+            },
+            "content" : {
+              "application/json;charset=UTF-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetPrintCheckResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/V2/merchants/{merId}/rvcs/{rvcId}/tables/{tableNo}/checks" : {
+      "get" : {
+        "tags" : [ "Get Data Functions" ],
+        "description" : "Get Info by Table No",
+        "operationId" : "GetInfobyTableNo",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/terminalId"
+        }, {
+          "$ref" : "#/components/parameters/api"
+        }, {
+          "$ref" : "#/components/parameters/timestamp"
+        }, {
+          "$ref" : "#/components/parameters/reqTrace"
+        }, {
+          "$ref" : "#/components/parameters/posMerId"
+        }, {
+          "$ref" : "#/components/parameters/posRvcId"
+        }, {
+          "$ref" : "#/components/parameters/sign"
+        }, {
+          "$ref" : "#/components/parameters/bearer"
+        }, {
+          "$ref" : "#/components/parameters/operator"
+        }, {
+          "$ref" : "#/components/parameters/password"
+        }, {
+          "$ref" : "#/components/parameters/merId"
+        }, {
+          "$ref" : "#/components/parameters/rvcId"
+        }, {
+          "$ref" : "#/components/parameters/tableNo"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "headers" : {
+              "Connection" : {
+                "content" : {
+                  "text/plain" : {
+                    "schema" : {
+                      "type" : "string"
+                    },
+                    "example" : "keep-alive"
+                  }
+                }
+              },
+              "Date" : {
+                "content" : {
+                  "text/plain" : {
+                    "schema" : {
+                      "type" : "string"
+                    },
+                    "example" : "Fri, 07 Sep 2018 16:41:08 GMT"
+                  }
+                }
+              },
+              "Transfer-Encoding" : {
+                "content" : {
+                  "text/plain" : {
+                    "schema" : {
+                      "type" : "string"
+                    },
+                    "example" : "chunked"
+                  }
+                }
+              }
+            },
+            "content" : {
+              "application/json;charset=UTF-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetCheckByTableNoResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/V2/merchants/{merId}/rvcs/{rvcId}/checks/{checkNo}/checks" : {
+      "get" : {
+        "tags" : [ "Get Data Functions" ],
+        "summary" : "Get Info by Check No",
+        "description" : "Authenticate user with provided operator and password.",
+        "operationId" : "GetInfobyCheckNo",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/terminalId"
+        }, {
+          "$ref" : "#/components/parameters/api"
+        }, {
+          "$ref" : "#/components/parameters/timestamp"
+        }, {
+          "$ref" : "#/components/parameters/reqTrace"
+        }, {
+          "$ref" : "#/components/parameters/posMerId"
+        }, {
+          "$ref" : "#/components/parameters/posRvcId"
+        }, {
+          "$ref" : "#/components/parameters/sign"
+        }, {
+          "$ref" : "#/components/parameters/bearer"
+        }, {
+          "$ref" : "#/components/parameters/operator"
+        }, {
+          "$ref" : "#/components/parameters/password"
+        }, {
+          "$ref" : "#/components/parameters/merId"
+        }, {
+          "$ref" : "#/components/parameters/rvcId"
+        }, {
+          "$ref" : "#/components/parameters/checkNo"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "headers" : {
+              "Connection" : {
+                "content" : {
+                  "text/plain" : {
+                    "schema" : {
+                      "type" : "string"
+                    },
+                    "example" : "keep-alive"
+                  }
+                }
+              },
+              "Date" : {
+                "content" : {
+                  "text/plain" : {
+                    "schema" : {
+                      "type" : "string"
+                    },
+                    "example" : "Fri, 07 Sep 2018 16:41:08 GMT"
+                  }
+                }
+              },
+              "Transfer-Encoding" : {
+                "content" : {
+                  "text/plain" : {
+                    "schema" : {
+                      "type" : "string"
+                    },
+                    "example" : "chunked"
+                  }
+                }
+              }
+            },
+            "content" : {
+              "application/json;charset=UTF-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetCheckByCheckNoResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/V2/merchants/{merId}/rvcs/{rvcId}/tables/{tableNo}/checks/{checkNo}/upload" : {
+      "post" : {
+        "tags" : [ "Post Check Payment Functions" ],
+        "summary" : "Upload Payment",
+        "description" : "Upload Payment",
+        "operationId" : "UploadPayment",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/terminalId"
+        }, {
+          "$ref" : "#/components/parameters/api"
+        }, {
+          "$ref" : "#/components/parameters/timestamp"
+        }, {
+          "$ref" : "#/components/parameters/reqTrace"
+        }, {
+          "$ref" : "#/components/parameters/posMerId"
+        }, {
+          "$ref" : "#/components/parameters/posRvcId"
+        }, {
+          "$ref" : "#/components/parameters/sign"
+        }, {
+          "$ref" : "#/components/parameters/bearer"
+        }, {
+          "$ref" : "#/components/parameters/merId"
+        }, {
+          "$ref" : "#/components/parameters/rvcId"
+        }, {
+          "$ref" : "#/components/parameters/tableNo"
+        }, {
+          "$ref" : "#/components/parameters/checkNo"
+        } ],
+        "requestBody" : {
+          "description" : "",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UploadPaymentRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "",
+            "headers" : {
+              "Connection" : {
+                "content" : {
+                  "text/plain" : {
+                    "schema" : {
+                      "type" : "string"
+                    },
+                    "example" : "keep-alive"
+                  }
+                }
+              },
+              "Date" : {
+                "content" : {
+                  "text/plain" : {
+                    "schema" : {
+                      "type" : "string"
+                    },
+                    "example" : "Fri, 07 Sep 2018 16:41:08 GMT"
+                  }
+                }
+              },
+              "Transfer-Encoding" : {
+                "content" : {
+                  "text/plain" : {
+                    "schema" : {
+                      "type" : "string"
+                    },
+                    "example" : "chunked"
+                  }
+                }
+              }
+            },
+            "content" : {
+              "application/json;charset=UTF-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UploadPaymentResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "parameters" : {
+      "terminalId" : {
+        "in" : "header",
+        "name" : "terId",
+        "description" : "Terminal Id, provided by PNG",
+        "required" : true,
+        "style" : "simple",
+        "schema" : {
+          "type" : "string",
+          "maxLength" : 20
+        }
+      },
+      "api" : {
+        "in" : "header",
+        "name" : "x-spat-api",
+        "description" : "Unique API User provided by PNG",
+        "required" : true,
+        "style" : "simple",
+        "schema" : {
+          "type" : "string",
+          "maxLength" : 64
+        }
+      },
+      "timestamp" : {
+        "in" : "header",
+        "name" : "x-spat-timestamp",
+        "description" : "Reqeust timestamp in yyyyMMddHHmmss format, provide by Client",
+        "required" : true,
+        "style" : "simple",
+        "schema" : {
+          "type" : "string",
+          "maxLength" : 14
+        }
+      },
+      "reqTrace" : {
+        "in" : "header",
+        "name" : "x-spat-reqTrace",
+        "description" : "Reqeust trace No. provided by Client",
+        "required" : true,
+        "style" : "simple",
+        "schema" : {
+          "type" : "string",
+          "maxLength" : 64
+        }
+      },
+      "posMerId" : {
+        "in" : "header",
+        "name" : "x-spat-posMerId",
+        "description" : "POS merchant/shop Id. provided by POS",
+        "required" : false,
+        "style" : "simple",
+        "schema" : {
+          "type" : "string",
+          "maxLength" : 32
+        }
+      },
+      "posRvcId" : {
+        "in" : "header",
+        "name" : "x-spat-posRvcId",
+        "description" : "POS RVC/Outlet Id. provided by POS",
+        "required" : false,
+        "style" : "simple",
+        "schema" : {
+          "type" : "string",
+          "maxLength" : 32
+        }
+      },
+      "sign" : {
+        "in" : "header",
+        "name" : "x-spat-sign",
+        "description" : "Request signature. Base64(MD5)",
+        "required" : true,
+        "style" : "simple",
+        "schema" : {
+          "type" : "string",
+          "maxLength" : 256
+        }
+      },
+      "bearer" : {
+        "in" : "header",
+        "name" : "bearer",
+        "description" : "API key provided by PNG",
+        "required" : true,
+        "style" : "simple",
+        "schema" : {
+          "type" : "string",
+          "maxLength" : 256
+        }
+      },
+      "operator" : {
+        "in" : "header",
+        "name" : "x-spat-operator",
+        "description" : "The operator of POS system, provided by POS",
+        "required" : false,
+        "style" : "simple",
+        "schema" : {
+          "type" : "string",
+          "maxLength" : 64
+        }
+      },
+      "password" : {
+        "in" : "header",
+        "name" : "x-spat-password",
+        "description" : "The password of POS system, provided by POS",
+        "required" : false,
+        "style" : "simple",
+        "schema" : {
+          "type" : "string",
+          "maxLength" : 64
+        }
+      },
+      "reUpload" : {
+        "in" : "header",
+        "name" : "x-spat-reUpload",
+        "description" : "To indicate this is a retry, default value is false",
+        "required" : false,
+        "style" : "simple",
+        "schema" : {
+          "type" : "string",
+          "default" : false,
+          "maxLength" : 5
+        }
+      },
+      "receiptType" : {
+        "in" : "header",
+        "name" : "x-spat-receiptType",
+        "description" : "Indicate receipt type to return.0-Check details. 1-Formated.2-Print line. Default 0.",
+        "required" : false,
+        "style" : "simple",
+        "schema" : {
+          "type" : "string",
+          "default" : 0,
+          "maxLength" : 5
+        }
+      },
+      "merId" : {
+        "in" : "path",
+        "name" : "merId",
+        "description" : "",
+        "required" : true,
+        "style" : "simple",
+        "schema" : {
+          "type" : "string",
+          "maxLength" : 32
+        }
+      },
+      "rvcId" : {
+        "in" : "path",
+        "name" : "rvcId",
+        "description" : "",
+        "required" : true,
+        "style" : "simple",
+        "schema" : {
+          "type" : "string",
+          "maxLength" : 32
+        }
+      },
+      "tableNo" : {
+        "in" : "path",
+        "name" : "tableNo",
+        "description" : "",
+        "required" : true,
+        "style" : "simple",
+        "schema" : {
+          "type" : "string",
+          "maxLength" : 10
+        }
+      },
+      "checkNo" : {
+        "in" : "path",
+        "name" : "checkNo",
+        "description" : "",
+        "required" : true,
+        "style" : "simple",
+        "schema" : {
+          "type" : "string",
+          "maxLength" : 10
+        }
+      }
+    },
+    "schemas" : {
+      "string2" : {
+        "type" : "string",
+        "maxLength" : 2
+      },
+      "string3" : {
+        "type" : "string",
+        "maxLength" : 3
+      },
+      "string6" : {
+        "type" : "string",
+        "maxLength" : 6
+      },
+      "string10" : {
+        "type" : "string",
+        "maxLength" : 10
+      },
+      "string14" : {
+        "type" : "string",
+        "maxLength" : 14
+      },
+      "string16" : {
+        "type" : "string",
+        "maxLength" : 16
+      },
+      "string20" : {
+        "type" : "string",
+        "maxLength" : 20
+      },
+      "string24" : {
+        "type" : "string",
+        "maxLength" : 24
+      },
+      "string32" : {
+        "type" : "string",
+        "maxLength" : 32
+      },
+      "string64" : {
+        "type" : "string",
+        "maxLength" : 64
+      },
+      "string128" : {
+        "type" : "string",
+        "maxLength" : 128
+      },
+      "string4096" : {
+        "type" : "string",
+        "maxLength" : 4096
+      },
+      "string40960" : {
+        "type" : "string",
+        "maxLength" : 40960
+      },
+      "number1" : {
+        "type" : "number",
+        "maxLength" : 1
+      },
+      "number3" : {
+        "type" : "number",
+        "maxLength" : 3
+      },
+      "number2" : {
+        "type" : "number",
+        "maxLength" : 2
+      },
+      "number12" : {
+        "type" : "number",
+        "maxLength" : 12
+      },
+      "number14" : {
+        "type" : "number",
+        "maxLength" : 14
+      },
+      "Configuration" : {
+        "required" : [ "enableSendEmail", "enableTip", "enableSurcharge", "enablePartialPayment", "enableLogon", "enableRefund", "enableLockTable", "enableVoid" ],
+        "properties" : {
+          "enableTip" : {
+            "type" : "boolean",
+            "default" : true
+          },
+          "enablePartialPayment" : {
+            "type" : "boolean",
+            "default" : true
+          },
+          "enableLogon" : {
+            "type" : "boolean",
+            "default" : true
+          },
+          "enableSurcharge" : {
+            "type" : "boolean",
+            "default" : true
+          },
+          "enableSendEmail" : {
+            "type" : "boolean",
+            "default" : true
+          },
+          "enableRefund" : {
+            "type" : "boolean",
+            "default" : true
+          },
+          "enableLockTable" : {
+            "type" : "boolean",
+            "default" : true
+          },
+          "enableVoid" : {
+            "type" : "boolean",
+            "default" : true
+          }
+        }
+      },
+      "Check" : {
+        "title" : "Check",
+        "required" : [ "merId", "rvcId", "posMerId", "posRvcId", "tableNo", "checkNo", "checkStatus", "checkAmt", "totalAmt", "amt", "paidTotalAmt", "items" ],
+        "properties" : {
+          "merId" : {
+            "$ref" : "#/components/schemas/string20"
+          },
+          "rvcId" : {
+            "$ref" : "#/components/schemas/string32"
+          },
+          "posMerId" : {
+            "$ref" : "#/components/schemas/string64"
+          },
+          "posRvcId" : {
+            "$ref" : "#/components/schemas/string64"
+          },
+          "tableNo" : {
+            "$ref" : "#/components/schemas/string10"
+          },
+          "checkNo" : {
+            "$ref" : "#/components/schemas/string10"
+          },
+          "seatNo" : {
+            "$ref" : "#/components/schemas/string10"
+          },
+          "checkOpenEmpId" : {
+            "$ref" : "#/components/schemas/string32"
+          },
+          "checkOpenTime" : {
+            "$ref" : "#/components/schemas/string32"
+          },
+          "checkCloseTime" : {
+            "$ref" : "#/components/schemas/string32"
+          },
+          "checkStatus" : {
+            "$ref" : "#/components/schemas/string10"
+          },
+          "checkOpenStationCode" : {
+            "$ref" : "#/components/schemas/string32"
+          },
+          "guests" : {
+            "$ref" : "#/components/schemas/number3"
+          },
+          "checkAmt" : {
+            "$ref" : "#/components/schemas/number12"
+          },
+          "svcTotalAmt" : {
+            "$ref" : "#/components/schemas/number12"
+          },
+          "surchargeAmt" : {
+            "$ref" : "#/components/schemas/number12"
+          },
+          "tipAmt" : {
+            "$ref" : "#/components/schemas/number12"
+          },
+          "totalAmt" : {
+            "$ref" : "#/components/schemas/number12"
+          },
+          "amt" : {
+            "$ref" : "#/components/schemas/number12"
+          },
+          "paidTotalAmt" : {
+            "$ref" : "#/components/schemas/number12"
+          },
+          "items" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Item"
+            }
+          },
+          "taxItems" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/TaxItem"
+            }
+          },
+          "extensions" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ExtensionItem"
+            }
+          },
+          "payments" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/CheckPayment"
+            }
+          }
+        }
+      },
+      "RvcInfo" : {
+        "title" : "RvcInfo",
+        "required" : [ "posMerId", "posMerName", "posRvcId", "posRvcName", "merId", "rvcId" ],
+        "properties" : {
+          "posMerId" : {
+            "$ref" : "#/components/schemas/string64"
+          },
+          "posMerName" : {
+            "$ref" : "#/components/schemas/string64"
+          },
+          "posRvcId" : {
+            "$ref" : "#/components/schemas/string64"
+          },
+          "posRvcName" : {
+            "$ref" : "#/components/schemas/string64"
+          },
+          "merId" : {
+            "$ref" : "#/components/schemas/string20"
+          },
+          "rvcId" : {
+            "$ref" : "#/components/schemas/string32"
+          },
+          "address1" : {
+            "$ref" : "#/components/schemas/string128"
+          },
+          "address2" : {
+            "$ref" : "#/components/schemas/string128"
+          },
+          "info" : {
+            "$ref" : "#/components/schemas/string128"
+          },
+          "phone" : {
+            "$ref" : "#/components/schemas/string32"
+          },
+          "fax" : {
+            "$ref" : "#/components/schemas/string64"
+          },
+          "website" : {
+            "$ref" : "#/components/schemas/string128"
+          }
+        }
+      },
+      "Item" : {
+        "title" : "Item",
+        "required" : [ "code", "name", "qty", "unitPrice", "total" ],
+        "properties" : {
+          "code" : {
+            "$ref" : "#/components/schemas/string64"
+          },
+          "name" : {
+            "$ref" : "#/components/schemas/string64"
+          },
+          "qty" : {
+            "$ref" : "#/components/schemas/number3"
+          },
+          "unitPrice" : {
+            "$ref" : "#/components/schemas/number12"
+          },
+          "total" : {
+            "$ref" : "#/components/schemas/number12"
+          }
+        }
+      },
+      "TaxItem" : {
+        "title" : "TaxItem",
+        "required" : [ "name", "amount" ],
+        "properties" : {
+          "name" : {
+            "$ref" : "#/components/schemas/string32"
+          },
+          "amount" : {
+            "$ref" : "#/components/schemas/string32"
+          }
+        }
+      },
+      "ExtensionItem" : {
+        "title" : "ExtensionItem",
+        "required" : [ "name", "value" ],
+        "properties" : {
+          "name" : {
+            "$ref" : "#/components/schemas/string32"
+          },
+          "value" : {
+            "$ref" : "#/components/schemas/string32"
+          }
+        }
+      },
+      "CheckPayment" : {
+        "title" : "CheckPayment",
+        "required" : [ "txnAmt", "totalAmt", "refNo" ],
+        "properties" : {
+          "tipAmt" : {
+            "$ref" : "#/components/schemas/number12"
+          },
+          "surchargeAmt" : {
+            "$ref" : "#/components/schemas/number12"
+          },
+          "txnAmt" : {
+            "$ref" : "#/components/schemas/number12"
+          },
+          "totalAmt" : {
+            "$ref" : "#/components/schemas/number12"
+          },
+          "refNo" : {
+            "$ref" : "#/components/schemas/string64"
+          },
+          "merRef" : {
+            "$ref" : "#/components/schemas/string32"
+          },
+          "txnNo" : {
+            "$ref" : "#/components/schemas/string32"
+          },
+          "maskedPan" : {
+            "$ref" : "#/components/schemas/string20"
+          },
+          "name" : {
+            "$ref" : "#/components/schemas/string20"
+          },
+          "code" : {
+            "$ref" : "#/components/schemas/string64"
+          }
+        }
+      },
+      "GetCheck" : {
+        "required" : [ "merId", "rvcId", "tableNo", "count", "configuration", "checks" ],
+        "properties" : {
+          "merId" : {
+            "$ref" : "#/components/schemas/string20"
+          },
+          "rvcId" : {
+            "$ref" : "#/components/schemas/string32"
+          },
+          "tableNo" : {
+            "$ref" : "#/components/schemas/string10"
+          },
+          "count" : {
+            "$ref" : "#/components/schemas/number3"
+          },
+          "configuration" : {
+            "$ref" : "#/components/schemas/Configuration"
+          },
+          "checks" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Check"
+            }
+          }
+        }
+      },
+      "GetPrintCheck" : {
+        "required" : [ "merId", "rvcId", "count", "tableNo", "checkNo" ],
+        "properties" : {
+          "merId" : {
+            "$ref" : "#/components/schemas/string20"
+          },
+          "rvcId" : {
+            "$ref" : "#/components/schemas/string32"
+          },
+          "count" : {
+            "$ref" : "#/components/schemas/string64"
+          },
+          "tableNo" : {
+            "$ref" : "#/components/schemas/string10"
+          },
+          "checkNo" : {
+            "$ref" : "#/components/schemas/string10"
+          },
+          "receiptType" : {
+            "$ref" : "#/components/schemas/string10"
+          },
+          "configuration" : {
+            "$ref" : "#/components/schemas/Configuration"
+          },
+          "rvcInfo" : {
+            "$ref" : "#/components/schemas/RvcInfo"
+          },
+          "checks" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Check"
+            }
+          },
+          "printLines" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "receiptContent" : {
+            "$ref" : "#/components/schemas/string40960"
+          }
+        }
+      },
+      "EmployeeCardValidationResult" : {
+        "required" : [ "operator" ],
+        "properties" : {
+          "operator" : {
+            "$ref" : "#/components/schemas/string32"
+          },
+          "firstName" : {
+            "$ref" : "#/components/schemas/string32"
+          },
+          "lastName" : {
+            "$ref" : "#/components/schemas/string32"
+          }
+        }
+      },
+      "CommonResponseFields" : {
+        "type" : "object",
+        "required" : [ "correlationId", "respTimestamp", "respCode" ],
+        "properties" : {
+          "respText" : {
+            "$ref" : "#/components/schemas/string64"
+          },
+          "correlationId" : {
+            "$ref" : "#/components/schemas/string32"
+          },
+          "requestIp" : {
+            "$ref" : "#/components/schemas/string64"
+          },
+          "respTimestamp" : {
+            "$ref" : "#/components/schemas/string14"
+          },
+          "respCode" : {
+            "$ref" : "#/components/schemas/string2"
+          }
+        }
+      },
+      "UserValidationRequest" : {
+        "title" : "UserValidationRequest",
+        "required" : [ "operator", "password" ],
+        "type" : "object",
+        "properties" : {
+          "operator" : {
+            "$ref" : "#/components/schemas/string64"
+          },
+          "password" : {
+            "$ref" : "#/components/schemas/string64"
+          }
+        }
+      },
+      "UserValidationResponse" : {
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/CommonResponseFields"
+        } ],
+        "title" : "UserValidationResponse"
+      },
+      "UserValidationByEmployeeCardDataRequest" : {
+        "title" : "UserValidationByEmployeeCardDataRequest",
+        "required" : [ "emplCardData" ],
+        "type" : "object",
+        "properties" : {
+          "emplCardData" : {
+            "$ref" : "#/components/schemas/string128"
+          }
+        }
+      },
+      "UserValidationByEmployeeCardDataResponse" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/CommonResponseFields"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "data" : {
+              "$ref" : "#/components/schemas/EmployeeCardValidationResult"
+            }
+          }
+        } ]
+      },
+      "ApiValidationResponse" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/CommonResponseFields"
+        }, {
+          "type" : "object"
+        } ]
+      },
+      "GetConfigurationResponse" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/CommonResponseFields"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "data" : {
+              "$ref" : "#/components/schemas/Configuration"
+            }
+          }
+        } ]
+      },
+      "GetPrintCheckResponse" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/CommonResponseFields"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "data" : {
+              "$ref" : "#/components/schemas/GetPrintCheck"
+            }
+          }
+        } ]
+      },
+      "GetCheckByTableNoResponse" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/CommonResponseFields"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "data" : {
+              "$ref" : "#/components/schemas/GetCheck"
+            }
+          }
+        } ]
+      },
+      "GetCheckByCheckNoResponse" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/CommonResponseFields"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "data" : {
+              "$ref" : "#/components/schemas/GetCheck"
+            }
+          }
+        } ]
+      },
+      "UploadPaymentRequest" : {
+        "type" : "object",
+        "required" : [ "merId", "rvcId", "txnType", "txnAmt", "totalAmt", "refNo", "merRef", "cardType", "issuerCode", "entryMode" ],
+        "properties" : {
+          "merId" : {
+            "$ref" : "#/components/schemas/string20"
+          },
+          "rvcId" : {
+            "$ref" : "#/components/schemas/string32"
+          },
+          "terId" : {
+            "$ref" : "#/components/schemas/string20"
+          },
+          "acqMerId" : {
+            "$ref" : "#/components/schemas/string32"
+          },
+          "acqTerId" : {
+            "$ref" : "#/components/schemas/string32"
+          },
+          "txnType" : {
+            "$ref" : "#/components/schemas/number2"
+          },
+          "tipAmt" : {
+            "$ref" : "#/components/schemas/number12"
+          },
+          "surchargeAmt" : {
+            "$ref" : "#/components/schemas/number12"
+          },
+          "txnAmt" : {
+            "$ref" : "#/components/schemas/number12"
+          },
+          "totalAmt" : {
+            "$ref" : "#/components/schemas/number12"
+          },
+          "refNo" : {
+            "$ref" : "#/components/schemas/string64"
+          },
+          "merRef" : {
+            "$ref" : "#/components/schemas/string32"
+          },
+          "txnDatetime" : {
+            "$ref" : "#/components/schemas/number14"
+          },
+          "token" : {
+            "$ref" : "#/components/schemas/string32"
+          },
+          "PAN" : {
+            "$ref" : "#/components/schemas/string20"
+          },
+          "accountId" : {
+            "$ref" : "#/components/schemas/string64"
+          },
+          "maskedPan" : {
+            "$ref" : "#/components/schemas/string20"
+          },
+          "cardType" : {
+            "$ref" : "#/components/schemas/number12"
+          },
+          "issuerCode" : {
+            "$ref" : "#/components/schemas/string10"
+          },
+          "entryMode" : {
+            "$ref" : "#/components/schemas/string2"
+          },
+          "authCode" : {
+            "$ref" : "#/components/schemas/string6"
+          },
+          "txnCurrCode" : {
+            "$ref" : "#/components/schemas/string3"
+          },
+          "txnCurrText" : {
+            "$ref" : "#/components/schemas/string3"
+          },
+          "dccFlag" : {
+            "$ref" : "#/components/schemas/number1"
+          },
+          "dccAmt" : {
+            "$ref" : "#/components/schemas/number12"
+          },
+          "dccRate" : {
+            "$ref" : "#/components/schemas/string20"
+          },
+          "dccCurrCode" : {
+            "$ref" : "#/components/schemas/string3"
+          },
+          "dccCurrText" : {
+            "$ref" : "#/components/schemas/string3"
+          },
+          "markup" : {
+            "$ref" : "#/components/schemas/string32"
+          },
+          "respCode" : {
+            "$ref" : "#/components/schemas/string2"
+          },
+          "respText" : {
+            "$ref" : "#/components/schemas/string64"
+          },
+          "merchantCopy" : {
+            "$ref" : "#/components/schemas/string4096"
+          },
+          "customerCopy" : {
+            "$ref" : "#/components/schemas/string4096"
+          },
+          "source" : {
+            "$ref" : "#/components/schemas/string16"
+          },
+          "traceNo" : {
+            "$ref" : "#/components/schemas/string64"
+          },
+          "invNo" : {
+            "$ref" : "#/components/schemas/string24"
+          },
+          "batchNo" : {
+            "$ref" : "#/components/schemas/string6"
+          },
+          "acqTxnNo" : {
+            "$ref" : "#/components/schemas/string64"
+          },
+          "acqTxnDatetime" : {
+            "$ref" : "#/components/schemas/string32"
+          },
+          "deviceBrand" : {
+            "$ref" : "#/components/schemas/string32"
+          },
+          "deviceModel" : {
+            "$ref" : "#/components/schemas/string32"
+          },
+          "pointAmt" : {
+            "$ref" : "#/components/schemas/string24"
+          },
+          "couponAmt" : {
+            "$ref" : "#/components/schemas/string24"
+          },
+          "eCouponAmt" : {
+            "$ref" : "#/components/schemas/string24"
+          },
+          "cashAmt" : {
+            "$ref" : "#/components/schemas/string24"
+          },
+          "merDiscAmt" : {
+            "$ref" : "#/components/schemas/string24"
+          },
+          "acqDiscAmt" : {
+            "$ref" : "#/components/schemas/string24"
+          },
+          "paidAmt" : {
+            "$ref" : "#/components/schemas/string24"
+          },
+          "incomeAmt" : {
+            "$ref" : "#/components/schemas/string24"
+          },
+          "invoiceAmt" : {
+            "$ref" : "#/components/schemas/string24"
+          },
+          "totalDiscAmt" : {
+            "$ref" : "#/components/schemas/string24"
+          }
+        }
+      },
+      "UploadPaymentResponse" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/CommonResponseFields"
+        }, {
+          "type" : "object"
+        } ]
+      }
+    }
+  },
+  "tags" : [ {
+    "name" : "Admin Functions"
+  }, {
+    "name" : "Get Data Functions"
+  }, {
+    "name" : "Post Check Payment Functions"
+  } ]
+}
