@@ -1,0 +1,1307 @@
+{
+  "openapi" : "3.0.0",
+  "info" : {
+    "description" : "IPPI Service Description.",
+    "version" : "1.0.3",
+    "title" : "IPPI Interface",
+    "termsOfService" : "http://swagger.io/terms/",
+    "license" : {
+      "name" : "Apache 2.0",
+      "url" : "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "tags" : [ {
+    "name" : "Financial Operations",
+    "description" : ""
+  }, {
+    "name" : "Non financial Operations",
+    "description" : ""
+  } ],
+  "paths" : {
+    "/ippi/settle" : {
+      "post" : {
+        "tags" : [ "Non financial Operations" ],
+        "summary" : "Settle\nThe end-of-day settlement submits once at the end of the business day and sends a\nmessage to the acquirer to trigger a cut-off for the day.\n",
+        "description" : "* Online settlement reconciliation not currently supported\n* A settlement request must be sent by the POS system to each connected payment terminal\n",
+        "operationId" : "settlement",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SettlementRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SettlementResponse"
+                }
+              }
+            }
+          },
+          "405" : {
+            "description" : "Invalid input"
+          }
+        }
+      }
+    },
+    "/ippi/tokenise" : {
+      "post" : {
+        "tags" : [ "Non financial Operations" ],
+        "summary" : "Tokenise\nGet Token request may be used by the POS system to tokenise a card number that is manually entered on the terminal.\n",
+        "description" : "* No payment authorisation or card validity check will be performed in conjunction with a Get Token request\n",
+        "operationId" : "tokenise",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/TokenRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TokenResponse"
+                }
+              }
+            }
+          },
+          "405" : {
+            "description" : "Invalid input"
+          }
+        }
+      }
+    },
+    "/ippi/sale" : {
+      "post" : {
+        "tags" : [ "Financial Operations" ],
+        "summary" : "Sale - Funds are transferred from the cardholder to the selected merchant in exchange for goods or services.\n",
+        "description" : "\n* Tipping\n  * Pre-declared - The **tipAmount** is populated in the request message. The **amount** field must be updated to include the **tipAmount**. e.g Sale = $40.00, Tip = $10 -> **amount** = 5000, **tipAmount** 1000.\n    The **tipAmount** will not be popolated in the response.\n\n  * Post-declared - If the integrated terminal is enabled for tipping AND the **tipAmount** has **not** been populated in the request message, then the terminal will prompt the user to enter the tip amount. This tip amount if entered will be returned in the response message in the **tipAmount** field.\n* Cash\n  * Not supported. See saleWithCash.\n\n* Surcharge\n  * Pre-declared - The **surchargeAmount** is populated in the request message. The **amount** field must be updated to include the **surchargeAmount**. e.g Sale = $30.00, Surcharge = $3.00 -> **amount** = 3300, **surchargeAmount** 300.\n\n  * Terminal Calculated - If the integrated terminal is enabled to calculate a surcharge, the surcharge amount calculated will be returned in the response message in the **surchargeAmount** .\n\n* Token fields - **tokenCode**, **maskedPAN**, **cardExpiry** and **cardType**\n  * When populated on the request - The transaction will be processed as **Card Not Present** on the terminal. These fields will **not** be returned on the request.\n\n  * Not populated on the request - The transaction will be processed as **Card Present** on the terminal. Token fields will only be returned on the request if the transation was approved.\n\n* **reasonCode** is mandatory for all lodgings transactions (merchantType=1)\n",
+        "operationId" : "saleRequest",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SaleRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SaleResponse"
+                }
+              }
+            }
+          },
+          "405" : {
+            "description" : "Invalid input"
+          }
+        }
+      }
+    },
+    "/ippi/saleWithCash" : {
+      "post" : {
+        "tags" : [ "Financial Operations" ],
+        "summary" : "Sales with Cash - Sales with Cash transactions will only be supported for Card-Present (token transactions are not supported ) transactions where the issuer scheme approves (e.g. Australian EFTPOS).\n",
+        "description" : "\n* Tipping\n  * Not supported.\n\n* Cash\n  * Pre-declared - The **cashAmount** must be populated in the request message. The **amount** field must be updated to include the **cashAmount**. e.g Sale = $60.00, Tip = $50 -> **amount** = 11000, **tipAmount** 5000.\n    The **tipAmount** will not be popolated in the response.\n\n  * Post-declared - Not supported.\n\n* Surcharge\n  * Pre-declared - The **surchargeAmount** is populated in the request message. The **amount** field must be updated to include the **surchargeAmount**. e.g Sale = $30.00, Surcharge = $3.00 -> **amount** = 3300, **surchargeAmount** 300.\n\n  * Terminal Calculated - If the integrated terminal is enabled to calculate a surcharge, the surcharge amount calculated will be returned in the response message in the **surchargeAmount** .\n\n* Token fields - **tokenCode**, **maskedPAN**, **cardExpiry** and **cardType**\n  * Token fields will only be returned on the request if the transation was approved.\n\n* **reasonCode** is mandatory for all lodgings transactions (merchantType=1)\n",
+        "operationId" : "saleWithCash",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SaleWithCashRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Sale with Cash Response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SaleWithCashResponse"
+                }
+              }
+            }
+          },
+          "405" : {
+            "description" : "Invalid input"
+          }
+        }
+      }
+    },
+    "/ippi/refund" : {
+      "post" : {
+        "tags" : [ "Financial Operations" ],
+        "summary" : "Refund - Funds are transferred from the merchant to the cardholder in exchange for returned goods or\nservices.\n",
+        "description" : "* Currency Select does not validate refund amounts against the original debit transaction\n  however the RRN from the original transaction may be included in the refund request\n\n* Tip\n  * **tipAmount** if present on the request message represents the tip value being refunded. The **amount** field must be updated to include the **tipAmount**. e.g Sale = $40.00, Tip = $10 -> **amount** = 5000, **tipAmount** 1000.\n\n* Cash\n  * **cashAmount** if present on the request message represents the cash value being refunded. The **amount** field must be updated to include the **cashAmount**. e.g Sale = $40.00, Cash = $20 -> **amount** = 6000, **cashAmount** 2000.\n\n* Tip or Cash - **not** both\n  * Please note that refund requests can contain **tipAmount** or **cashAmount** but not both. If a refund request contains both, it will be rejected and the transaction will fail.\n\n* Surcharge\n  * **surchangeAmount** if present on the request message represents the surchange amount being refunded. The **amount** field must be updated to include the **surchangeAmount**. e.g Sale = $30.00, Surchange = $3 -> **amount** = 3300, **surchangeAmount** 300.\n\n* Token fields - **tokenCode**, **maskedPAN**, **cardExpiry** and **cardType**\n  * When populated on the request - The transaction will be processed as **Card Not Present** on the terminal. These fields will **not** be returned on the request.\n\n  * Not populated on the request - The transaction will be processed as **Card Present** on the terminal. Token fields will only be returned on the request if the transation was approved.\n",
+        "operationId" : "refund",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/RefundRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Refund Response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/RefundResponse"
+                }
+              }
+            }
+          },
+          "405" : {
+            "description" : "Invalid input"
+          }
+        }
+      }
+    },
+    "/ippi/auth" : {
+      "post" : {
+        "tags" : [ "Financial Operations" ],
+        "summary" : "Pre-authorisation - A Pre-Authorisation ensures that a cardholder has sufficient funds available to transfer at a later stage in exchange for goods or services. The card issuer places a hold on the cardholder’s funds until such times as the pre-authorisation is completed, released or expires.\n",
+        "description" : "\n* Tipping\n  * Not supported.\n\n* Cash\n  * Not supported.\n\n* Surcharge\n  * Not supported.\n\n* Token fields - **tokenCode**, **maskedPAN**, **cardExpiry** and **cardType**\n  * When populated on the request - The transaction will be processed as **Card Not Present** on the terminal. These fields will **not** be returned on the request.\n\n  * Not populated on the request - The transaction will be processed as **Card Present** on the terminal. Token fields will only be returned on the request if the transation was approved.\n",
+        "operationId" : "authRequest",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/AuthRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          },
+          "405" : {
+            "description" : "Invalid input"
+          }
+        }
+      }
+    },
+    "/ippi/auth/topup" : {
+      "post" : {
+        "tags" : [ "Financial Operations" ],
+        "summary" : "Pre-authorisation Topup - A top-up reserves additional funds against a previous pre-authorisation transaction. The card issuer places a hold on the additional amount until such time as the original pre authorisation is completed, cancelled, or expires.\n",
+        "description" : "* A top-up transaction is linked to the original pre-auth by providing the original RRN in the\n  **originalRef** field in the request message.\n\n* Tipping\n  * Not supported.\n\n* Surcharge\n  * Not supported.\n\n* Token fields - **tokenCode**, **maskedPAN**, **cardExpiry** and **cardType**\n  * Are mandatory and must match the original token fields returned in the original auth request.\n  * These fields will **not** be returned on the request.\n\n* **reasonCode** is mandatory for all lodgings transactions (merchantType=1)\n",
+        "operationId" : "authTopUp",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/AuthTopUpRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthTopUpResponse"
+                }
+              }
+            }
+          },
+          "405" : {
+            "description" : "Invalid input"
+          }
+        }
+      }
+    },
+    "/ippi/auth/release" : {
+      "post" : {
+        "tags" : [ "Financial Operations" ],
+        "summary" : "Pre-authorisation Release - A previous pre-authorisation is released or cancelled. The card issuer removes the hold on the cardholder’s funds\n",
+        "description" : "* On receipt of a Pre-Auth cancel, Currency Select will cancel the original and all\n  associated top-up authorisations\n\n* A release transaction is linked to the original pre-auth by providing the original RRN in the\n  **originalRef** field in the request message.\n\n* Tipping\n  * Not supported.\n\n* Surcharge\n  * Not supported.\n\n* Token fields\n  * Are not required\n\n* **reasonCode** is mandatory for all lodgings transactions (merchantType=1)\n",
+        "operationId" : "cardNotPresentAuthRelease",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/AuthReleaseRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthReleaseResponse"
+                }
+              }
+            }
+          },
+          "405" : {
+            "description" : "Invalid input"
+          }
+        }
+      }
+    },
+    "/ippi/auth/capture" : {
+      "post" : {
+        "tags" : [ "Financial Operations" ],
+        "summary" : "Pre Authorisation Capture/Complete - A previously approved Pre-Authorisation transaction is completed. Funds are exchanged from the cardholder to the selected merchant in exchange for goods or services supplied.\n",
+        "description" : "* Card-Present capture requests not supported.\n\n* **originalref**, **authID* from the initial pre-Auth Transaction must be provided in the capture request message.\n\n* Tipping\n  * Not supported.\n\n* Surcharge\n  * Pre-declared - A surcharge amount may be included by the POS in **surchargeAmount** in the request message. The surcharge amount must be added to the base amount in **amount** in the request message.\n\n  * Terminal Calculated - If the integrated terminal is enabled to calculate a surcharge, the surcharge amount calculated will be returned in the response message in the **surchargeAmount**.\n\n* Token fields - **tokenCode**, **maskedPAN**, **cardExpiry** and **cardType**\n  * Are mandatory and must match the original token fields returned in the original auth request.\n  * These fields will **not** be returned on the request.\n\n* **amount** must include the final amount to be billed to the cardholder.\n\n* If the **fxConvFlag** is present on the request and value is ‘1’ then host will convert transaction to\n  cardholder currency\n\n* **fxConvFlag** is returned where a DCC offer ismade to the cardholder or force converted by the host\n",
+        "operationId" : "authCapture",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/AuthCaptureRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthCaptureResponse"
+                }
+              }
+            }
+          },
+          "405" : {
+            "description" : "Invalid input"
+          }
+        }
+      }
+    },
+    "/ippi/void" : {
+      "post" : {
+        "tags" : [ "Financial Operations" ],
+        "summary" : "Void - A Void transaction is a reversal of a previously approved transaction. A void must be\nperformed in the same settlement day as the original transaction\n",
+        "description" : "* A void transaction must be directed to the same terminal that processed the original\n  transaction\n* Partial voids are not supported\n* The terminal will identify the transaction to be voided by the _originalRef_ provided in the\n  request message.\n* The following transaction types can be voided with this transaction type\n  * Sale\n  * Sale + Cash\n  * Sale + Tip\n  * Refund\n  * Pre-Authorisation\n  * Authorisation Top-Up\n  * Pre-Auth Completion\n",
+        "operationId" : "void",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/VoidRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/VoidResponse"
+                }
+              }
+            }
+          },
+          "405" : {
+            "description" : "Invalid input"
+          }
+        }
+      }
+    },
+    "/ippi/reversal" : {
+      "post" : {
+        "tags" : [ "Financial Operations" ],
+        "summary" : "Reversal - A network reversal is sent by the POS in response to a transaction timeout event\n",
+        "description" : "* A network reversal request must be directed to the same terminal that processed the original transaction otherwise a ‘PT’ response will be returned (Transaction Not Found)\n* A network reversal transaction may be sent for the following transaction types\n  * Sales\n  * Sales + Cash\n  * Refund\n  * Pre-Authorisation\n  * Authorisation Top-Up\n  * Capture\n* The original transaction message type, date and time and message number are sent in **orginalType**, **originalDatetime** and originalMessageNo respectively\n* A Network Reversal message should not be generated for at least 40 seconds after the original was sent\n",
+        "operationId" : "reversal",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ReversalRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ReversalResponse"
+                }
+              }
+            }
+          },
+          "405" : {
+            "description" : "Invalid input"
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "Amount" : {
+        "type" : "string",
+        "pattern" : "^[0-9]{1,12}$",
+        "description" : "The requested transaction amount including minor units e.g. $50.76 AUD = 5076"
+      },
+      "OriginalAuthAmount" : {
+        "type" : "string",
+        "pattern" : "^[0-9]{1,12}$",
+        "description" : "Original Auth Amount (not including top-ups)\n"
+      },
+      "OriginalAmount" : {
+        "type" : "string",
+        "pattern" : "^[0-9]{1,12}$",
+        "description" : "Original Amount\n"
+      },
+      "RequestAuthId" : {
+        "type" : "string",
+        "pattern" : "^[0-9a-zA-Z]{2,6}$",
+        "description" : "Issuer Authorisation Code from the initial pre-authorisation transaction\n"
+      },
+      "ResponseAuthId" : {
+        "type" : "string",
+        "pattern" : "^[0-9a-zA-Z]{2,6}$",
+        "maxLength" : 6,
+        "description" : "Issuer approval code. Returned by the issuer for approved </br>transactions only."
+      },
+      "CardHolderAmount" : {
+        "type" : "string",
+        "pattern" : "^[0-9]{1,12}$",
+        "maxLength" : 12,
+        "description" : "Total amount in the cardholder billing currency. Only returned for</br> approved transactions where Dynamic Currency Conversion (DCC) is offered to the cardholder.</br>The amount includes minor units</br>e.g. $45.22 USD = 4522</br>A complete list of minor currency units is provided at the end of this document"
+      },
+      "CardHolderCurrency" : {
+        "type" : "string",
+        "pattern" : "[0-9]{3}",
+        "description" : "Cardholder billing currency. Only returned for approved</br>transactions where Dynamic Currency Conversion (DCC) is offered</br>to the cardholder"
+      },
+      "CardType" : {
+        "type" : "string",
+        "pattern" : "^[0-9]{2}$",
+        "maxLength" : 2,
+        "minLength" : 2,
+        "description" : "Card issuer identifier. The current values are supported by\nCurrency Select are\n\n|**CardType**| **Issuer** |\n|--------|--------------- |\n|00 |Local debit|\n|01 |VISA credit|\n|02 |MasterCard Credit|\n|03 |American Express|\n|04 |Diners Club|\n|05 |JCB|\n|06 |China Union Pay (CUP)|\n|18 |VISA Debit|\n|24 |MasterCard Debit|\n|25 |WeChat|\n|26 |Alipay|\n"
+      },
+      "Currency" : {
+        "type" : "string",
+        "pattern" : "[0-9]{3}",
+        "description" : "The ISO Currency Code for all _amount_ fields."
+      },
+      "DateTime" : {
+        "type" : "string",
+        "pattern" : "^(19|20)[0-9]{2}[-](0[1-9]|1[012])[-](0[1-9]|[12][0-9]|3[01])T([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9][+-][01][0-9]:[0-5][0-9]$",
+        "maxLength" : 25,
+        "description" : "Current date and time of the transaction in </br>ISO 8601 format</br>YYYY-MM-DDThh:mm:ssTZD</br> Example:</br>2019-05-01T15:2:36-05:00"
+      },
+      "OriginalDateTime" : {
+        "type" : "string",
+        "pattern" : "^(19|20)[0-9]{2}[-](0[1-9]|1[012])[-](0[1-9]|[12][0-9]|3[01])T([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9][+-][01][0-9]:[0-5][0-9]$",
+        "maxLength" : 25,
+        "description" : "Original Date and time of the transaction being reversed ( See datetime for def)"
+      },
+      "CardExpiry" : {
+        "type" : "string",
+        "pattern" : "^[0-9]{4}$",
+        "maxLength" : 4,
+        "minLength" : 4,
+        "description" : "Card Expiry Date</br>Format YYMM"
+      },
+      "ForeignExchangeConversionFlag" : {
+        "type" : "string",
+        "maxLength" : 1,
+        "minLength" : 1,
+        "pattern" : "^[1|2]{1}$",
+        "description" : "Indicates status of a DCC offer to the cardholder. Only returned for</br> approved transactions.\n\n|*Value*|*Description*|\n|----|--------------- |\n|1   | DCC qualified & cardholder opted-in |\n|2   | DCC qualified & cardholder opted-out |\n"
+      },
+      "ForeignExchangeRate" : {
+        "type" : "string",
+        "maxLength" : 10,
+        "description" : "The exchange rate applied to all foreign conversion transactions\n\nThis data element is in the format ABBBBBBBBB, where\n• A = the decimal position offset from the right\n• B = the actual conversion factor\n\nFor example, a conversion rate of 1.123456 represented as\n61123456\n"
+      },
+      "InvoiceNo" : {
+        "type" : "string",
+        "pattern" : "[\\s\\S]*",
+        "maxLength" : 20,
+        "description" : "Merchant invoice number or other reference\n"
+      },
+      "IppiVersion" : {
+        "type" : "string",
+        "pattern" : "[\\s\\S]*",
+        "maxLength" : 10,
+        "description" : "Version of IPPI certified and in use by the POS system </br>Format “A.B”"
+      },
+      "MaskedPAN" : {
+        "type" : "string",
+        "pattern" : "^[X0-9]{1,19}$",
+        "maxLength" : 19,
+        "description" : "Masked PAN\nFormat XXXXXXXXXXXXNNNN Where **NNNN** is the last 4 digits of the card number.\n"
+      },
+      "MerchantNo" : {
+        "type" : "string",
+        "pattern" : "^[0-9a-zA-Z ,.;'+\\-_=\\/`~!@#$%^&*()|]{1,60}$",
+        "maxLength" : 60,
+        "description" : "Unique merchant identifier. May be the same as _MID_ assigned <br>by Currency Select. Mandatory data element in all messages."
+      },
+      "MerchantType" : {
+        "type" : "string",
+        "pattern" : "^[0-9]{1}$",
+        "maxLength" : 1,
+        "description" : "\n|Value|Description|\n|----|--------------- |\n|1   | Lodgings |\n|2   | Food and Beverage |\n|3   | Retail |\n|4   | Airline |\n|5 | Travel Bookings |\n|6 | Car Rental |\n|7 | Gaming |\n|8 | Entertainment |\n|9 | Other |\n"
+      },
+      "MerchantID" : {
+        "type" : "string",
+        "maxLength" : 15,
+        "description" : "Merchant Identifier assigned by Currency Select. Returned in all</br> approved transactions."
+      },
+      "MessageNo" : {
+        "type" : "string",
+        "pattern" : "^[0-9]{1,6}$",
+        "maxLength" : 6,
+        "description" : "A unique transaction identifier set by the POS. Will be echoed back in the response and may be used by the POS to match the response to the original request </br>\n"
+      },
+      "OriginalMessageNo" : {
+        "type" : "string",
+        "pattern" : "^[0-9]{1,6}$",
+        "maxLength" : 6,
+        "description" : "Original messageNo of the transaction being reversed ( See messageNo for def )"
+      },
+      "MessageType" : {
+        "type" : "string",
+        "pattern" : "^(sales|cash|refund|reversal|preauth|topup|capture|void|settlement|release|inquiry|tokenise)$",
+        "maxLength" : 12,
+        "description" : "Message type identifier. Must be one of the following values\n|**messageType Value**|\n|---|\n|sales|\n|cash|\n|refund|\n|reversal|\n|preauth|\n|topup|\n|capture|\n|void|\n|settlement|\n|release|\n|inquiry|\n|tokenise|\n"
+      },
+      "OriginalRef" : {
+        "type" : "string",
+        "pattern" : "^[0-9]{12}$",
+        "maxLength" : 12,
+        "description" : "Retrieval Reference (refrievalRef) from an original transaction\n"
+      },
+      "PosEntry" : {
+        "type" : "string",
+        "maxLength" : 2,
+        "minLength" : 2,
+        "pattern" : "^[0-9]{2}$",
+        "description" : "The entry mode is returned by the terminal for card-present\ntransactions and indicates to the POS how card information was\nobtained.\n\n|**EntryMode**|**Description**|\n|----|--------------- |\n|10 |EMV Fallback (Signature Verification)|\n|11 |Proximity via Magnetic Stripe (Signature Verification)|\n|12 |Proximity via Magnetic Stripe (No CVM)|\n|13 |Proximity via ICC (Signature Verification)|\n|14 |Proximity via ICC (PIN Verification)|\n|15 |Proximity via ICC (Customer Device Verified)|\n|16 |Proximity via ICC (No CVM)|\n|17 |Swiping without PIN (Signature Verification)|\n|18 |Swiping with PIN (PIN Verification)|\n|19 |Swiping – No CVM|\n|20 |Manual enter card number (Signature Verification)|\n|21 |Manual enter card number – No CVM|\n|22 |EMV (Signature Verification)|\n|23 |EMV (PIN Verification)|\n|24 |EMV (PIN & Signature Verification)|\n|25 |ICC – No CVM|\n"
+      },
+      "PosSoftware" : {
+        "type" : "string",
+        "maxLength" : 40,
+        "description" : "POS Server Information\n"
+      },
+      "ReasonCode" : {
+        "type" : "string",
+        "pattern" : "^[A-G]{1}$",
+        "maxLength" : 1,
+        "description" : "Reason Code – Must be present for some lodgings transactions\nwhen the following reasons\n\n|**Value** |**Message Type Reason** |**Description**|\n|-|------|-----------------|\n|A| Sales   |Damaged Card|\n|B| Sales   |Late Charges|\n|C| Sales   |Re-authorisation|\n|D| Sales   |No Show|\n|E| Preauth |Initial Pre-Authorisation|\n|H| Preauth |Re-authorisation|\n|G| Topup   |Incremental Authorisation|\n"
+      },
+      "ReceiptString" : {
+        "type" : "string",
+        "maxLength" : 1024,
+        "description" : "Full formatted receipt data. Lines are terminated with character “#”.\nPages are terminated with “@”. Maximum number of characters per\nline is 32\n\nReturned for approved transactions only\n"
+      },
+      "ResponseCode" : {
+        "type" : "string",
+        "pattern" : "^[0-9A-Z]{2}$",
+        "maxLength" : 2,
+        "description" : "Response code returned by the authorisation host that indicates success or failure of the transaction.\n"
+      },
+      "ResponseText" : {
+        "type" : "string",
+        "maxLength" : 32,
+        "description" : "Response text returned by the authorisation host that indicates success or failure of the transaction. \n"
+      },
+      "RetrievalRef" : {
+        "type" : "string",
+        "maxLength" : 12,
+        "description" : "Retrieval Reference Number. This reference number must be stored by the host for subsequent secondary transactions.\n"
+      },
+      "StationID" : {
+        "type" : "string",
+        "pattern" : "^[0-9a-zA-Z ,.;'+\\-_=\\/`~!@#$%^&*()]{1,20}$",
+        "maxLength" : 20,
+        "description" : "Operator Workstation Identifier. A unique string identifying the\nmerchant operator workstation used to initiate the transaction\n"
+      },
+      "TerminalID" : {
+        "type" : "string",
+        "maxLength" : 8,
+        "description" : "Terminal Identification Number, Returned for all approved\ntransactions\n"
+      },
+      "TokenCode" : {
+        "type" : "string",
+        "pattern" : "^[0-9a-zA-Z]{1,32}$",
+        "maxLength" : 32,
+        "description" : "Card number token string generated by the authorisation host\nduring an initial Card-Present transactions or tokenisation request.\nTo be used by the POS for all subsequent Card-not-Present and\nreference transactions such as Release, Capture, Top-Up, etc\n\nThe Expiry Date, Masked PAN and cardType must be stored and\nreturned by the POS whenever it is used for a subsequent\ntransaction.\n\nCurrency Select supports a customisable Token Code format.\n"
+      },
+      "RequestTokenCode" : {
+        "type" : "string",
+        "pattern" : "^[0-9a-zA-Z]{1,32}$",
+        "maxLength" : 32,
+        "description" : "Card number token string generated by the authorisation host.\nPresent on the request for **card not present** transactions only.\n"
+      },
+      "RequestCardType" : {
+        "type" : "string",
+        "pattern" : "^[0-9]{2}$",
+        "maxLength" : 2,
+        "minLength" : 2,
+        "description" : "Card issuer identifier. The current values are supported by Currency Select are\n\n|**CardType**| **Issuer** |\n|--------|--------------- |\n|00 |Local debit|\n|01 |VISA credit|\n|02 |MasterCard Credit|\n|03 |American Express|\n|04 |Diners Club|\n|05 |JCB|\n|06 |China Union Pay (CUP)|\n|18 |VISA Debit|\n|24 |MasterCard Debit|\n|25 |WeChat|\n|26 |Alipay|\n\nPresent on the request for **card not present** transactions only.\n"
+      },
+      "RequestCardExpiry" : {
+        "type" : "string",
+        "pattern" : "^[0-9]{4}$",
+        "maxLength" : 4,
+        "minLength" : 4,
+        "description" : "Card Expiry Date</br>Format YYMM\nPresent on the request for **card not present** transactions only. \n"
+      },
+      "RequestMaskedPAN" : {
+        "type" : "string",
+        "pattern" : "^[X0-9]{1,19}$",
+        "maxLength" : 19,
+        "description" : "Masked PAN\nFormat XXXXXXXXXXXXNNNN Where **NNNN** is the last 4 digits of the card number.\nPresent on the request for **card not present** transactions only. \n"
+      },
+      "ResponseTokenCode" : {
+        "type" : "string",
+        "pattern" : "^[0-9a-zA-Z]{1,32}$",
+        "maxLength" : 32,
+        "description" : "Card number token string generated by the authorisation host.\nPresent on the response for approved **card present** transactions only.\n"
+      },
+      "ResponseCardType" : {
+        "type" : "string",
+        "pattern" : "^[0-9]{2}$",
+        "maxLength" : 2,
+        "minLength" : 2,
+        "description" : "\nCard issuer identifier. The current values are supported by Currency Select are\n\n|**CardType**| **Issuer** |\n|--------|--------------- |\n|00 |Local debit|\n|01 |VISA credit|\n|02 |MasterCard Credit|\n|03 |American Express|\n|04 |Diners Club|\n|05 |JCB|\n|06 |China Union Pay (CUP)|\n|18 |VISA Debit|\n|24 |MasterCard Debit|\n|25 |WeChat|\n|26 |Alipay|\n\nPresent on the response for approved **card present** transactions only.\n"
+      },
+      "ResponseCardExpiry" : {
+        "type" : "string",
+        "pattern" : "^[0-9]{4}$",
+        "maxLength" : 4,
+        "minLength" : 4,
+        "description" : "Card Expiry Date</br>Format YYMM\nPresent on the response for approved **card present** transactions only.\n"
+      },
+      "ResponseMaskedPAN" : {
+        "type" : "string",
+        "pattern" : "^[X0-9]{1,19}$",
+        "maxLength" : 19,
+        "description" : "Masked PAN\nFormat XXXXXXXXXXXXNNNN Where **NNNN** is the last 4 digits of the card number.\nPresent on the response for approved **card present** transactions only.\n"
+      },
+      "UserId" : {
+        "type" : "string",
+        "pattern" : "^[0-9a-zA-Z ,.;'+\\-_=\\/`~!@#$%^&*()]{1,26}$"
+      },
+      "RequestTipAmount" : {
+        "type" : "string",
+        "pattern" : "^[0-9]{1,12}$",
+        "maxLength" : 12,
+        "description" : "Pre-declared tip amount that was set at the POS"
+      },
+      "ResponseTipAmount" : {
+        "type" : "string",
+        "pattern" : "^[0-9]{1,12}$",
+        "description" : "If present, this amount reflects the tip amount that was entered by the user at the Terminal/Pinpad"
+      },
+      "ResponseSurchargeAmount" : {
+        "type" : "string",
+        "pattern" : "^[0-9]{1,12}$",
+        "description" : "Amount field (see amount)\nSurcharge added at terminal and returned in response\n"
+      },
+      "RequestSurchargeAmount" : {
+        "type" : "string",
+        "pattern" : "^[0-9]{1,12}$",
+        "description" : "Amount field (see amount)\nSurcharge added at POS (Predeclared)\n"
+      },
+      "RequestCashAmount" : {
+        "type" : "string",
+        "pattern" : "^[0-9]{1,12}$",
+        "description" : "Amount field (see amount)\nCash amount\n"
+      },
+      "RefundRequestAmount" : {
+        "type" : "string",
+        "pattern" : "^[0-9]{1,12}$",
+        "maxLength" : 12,
+        "description" : "Sale Amount + optional Tip/Cash + Surcharge Amount added by the terminal\n"
+      },
+      "RefundRequestTipAmount" : {
+        "type" : "string",
+        "pattern" : "^[0-9]{1,12}$",
+        "maxLength" : 12,
+        "description" : "Tip component if refunding a sale that included a tip amount\n"
+      },
+      "RefundRequestCashAmount" : {
+        "type" : "string",
+        "pattern" : "^[0-9]{1,12}$",
+        "maxLength" : 12,
+        "description" : "Cash component if refunding a saleWith cash amount\n"
+      },
+      "RefundRequestSurchargeAmount" : {
+        "type" : "string",
+        "pattern" : "^[0-9]{1,12}$",
+        "maxLength" : 12,
+        "description" : "Surcharge component to be refunded added at POS\n"
+      },
+      "RefundResponseAmount" : {
+        "type" : "string",
+        "pattern" : "^[0-9]{1,12}$",
+        "maxLength" : 12,
+        "description" : "Refund Amount + Tip/Cash Amount + optional surcharge added by the Terminal\n"
+      },
+      "RefundResponseSurchargeAmount" : {
+        "type" : "string",
+        "pattern" : "^[0-9]{1,12}$",
+        "maxLength" : 12,
+        "description" : "Surcharge to be refunded calculated by the terminal and returned in\nresponse\n"
+      },
+      "TokenFields" : {
+        "type" : "object",
+        "properties" : {
+          "tokenCode" : {
+            "$ref" : "#/components/schemas/TokenCode"
+          },
+          "cardType" : {
+            "$ref" : "#/components/schemas/CardType"
+          },
+          "maskedPAN" : {
+            "$ref" : "#/components/schemas/MaskedPAN"
+          },
+          "cardExpiry" : {
+            "$ref" : "#/components/schemas/CardExpiry"
+          }
+        }
+      },
+      "RequestTokenFields" : {
+        "type" : "object",
+        "properties" : {
+          "tokenCode" : {
+            "$ref" : "#/components/schemas/RequestTokenCode"
+          },
+          "cardType" : {
+            "$ref" : "#/components/schemas/RequestCardType"
+          },
+          "maskedPAN" : {
+            "$ref" : "#/components/schemas/RequestMaskedPAN"
+          },
+          "cardExpiry" : {
+            "$ref" : "#/components/schemas/RequestCardExpiry"
+          }
+        }
+      },
+      "ResponseTokenFields" : {
+        "type" : "object",
+        "properties" : {
+          "tokenCode" : {
+            "$ref" : "#/components/schemas/ResponseTokenCode"
+          },
+          "cardType" : {
+            "$ref" : "#/components/schemas/ResponseCardType"
+          },
+          "maskedPAN" : {
+            "$ref" : "#/components/schemas/ResponseMaskedPAN"
+          },
+          "cardExpiry" : {
+            "$ref" : "#/components/schemas/ResponseCardExpiry"
+          }
+        }
+      },
+      "CommonRequestFields" : {
+        "type" : "object",
+        "required" : [ "messageNo", "messageType", "dateTime", "ippiVersion", "merchantNo", "stationID", "merchantType" ],
+        "properties" : {
+          "messageNo" : {
+            "$ref" : "#/components/schemas/MessageNo"
+          },
+          "messageType" : {
+            "$ref" : "#/components/schemas/MessageType"
+          },
+          "dateTime" : {
+            "$ref" : "#/components/schemas/DateTime"
+          },
+          "ippiVersion" : {
+            "$ref" : "#/components/schemas/IppiVersion"
+          },
+          "merchantNo" : {
+            "$ref" : "#/components/schemas/MerchantNo"
+          },
+          "stationID" : {
+            "$ref" : "#/components/schemas/StationID"
+          },
+          "merchantType" : {
+            "$ref" : "#/components/schemas/MerchantType"
+          },
+          "posSoftware" : {
+            "$ref" : "#/components/schemas/PosSoftware"
+          },
+          "reasonCode" : {
+            "$ref" : "#/components/schemas/ReasonCode"
+          }
+        }
+      },
+      "CommonResponseFields" : {
+        "type" : "object",
+        "required" : [ "messageNo", "messageType", "responseCode", "responseText", "retrievalRef" ],
+        "properties" : {
+          "messageNo" : {
+            "$ref" : "#/components/schemas/MessageNo"
+          },
+          "messageType" : {
+            "$ref" : "#/components/schemas/MessageType"
+          },
+          "responseCode" : {
+            "$ref" : "#/components/schemas/ResponseCode"
+          },
+          "responseText" : {
+            "$ref" : "#/components/schemas/ResponseText"
+          },
+          "retrievalRef" : {
+            "$ref" : "#/components/schemas/RetrievalRef"
+          },
+          "mid" : {
+            "$ref" : "#/components/schemas/MerchantID"
+          },
+          "tid" : {
+            "$ref" : "#/components/schemas/TerminalID"
+          }
+        }
+      },
+      "CommonOptionalFields" : {
+        "type" : "object",
+        "properties" : {
+          "userID" : {
+            "$ref" : "#/components/schemas/UserId"
+          },
+          "posSoftware" : {
+            "$ref" : "#/components/schemas/PosSoftware"
+          },
+          "invoiceNo" : {
+            "$ref" : "#/components/schemas/InvoiceNo"
+          }
+        }
+      },
+      "ForeignExchangeFields" : {
+        "type" : "object",
+        "properties" : {
+          "fxConvFlag" : {
+            "$ref" : "#/components/schemas/ForeignExchangeConversionFlag"
+          },
+          "cardholderAmt" : {
+            "$ref" : "#/components/schemas/CardHolderAmount"
+          },
+          "cardholderCurr" : {
+            "$ref" : "#/components/schemas/CardHolderCurrency"
+          },
+          "fxRate" : {
+            "$ref" : "#/components/schemas/ForeignExchangeRate"
+          }
+        }
+      },
+      "SaleWithCashRequest" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/CommonRequestFields"
+        }, {
+          "$ref" : "#/components/schemas/CommonOptionalFields"
+        }, {
+          "type" : "object",
+          "required" : [ "amount", "cashAmount", "currency", "merchantNo", "merchantType" ],
+          "properties" : {
+            "amount" : {
+              "$ref" : "#/components/schemas/Amount"
+            },
+            "cashAmount" : {
+              "$ref" : "#/components/schemas/RequestCashAmount"
+            },
+            "surchargeAmount" : {
+              "$ref" : "#/components/schemas/RequestSurchargeAmount"
+            },
+            "currency" : {
+              "$ref" : "#/components/schemas/Currency"
+            }
+          }
+        } ]
+      },
+      "SaleWithCashResponse" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/CommonResponseFields"
+        }, {
+          "$ref" : "#/components/schemas/ForeignExchangeFields"
+        }, {
+          "$ref" : "#/components/schemas/ResponseTokenFields"
+        }, {
+          "type" : "object",
+          "required" : [ "posEntry" ],
+          "properties" : {
+            "surchargeAmount" : {
+              "$ref" : "#/components/schemas/ResponseSurchargeAmount"
+            },
+            "authID" : {
+              "$ref" : "#/components/schemas/ResponseAuthId"
+            },
+            "posEntry" : {
+              "$ref" : "#/components/schemas/PosEntry"
+            },
+            "receiptString" : {
+              "$ref" : "#/components/schemas/ReceiptString"
+            }
+          }
+        } ]
+      },
+      "RefundRequest" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/CommonRequestFields"
+        }, {
+          "$ref" : "#/components/schemas/CommonOptionalFields"
+        }, {
+          "$ref" : "#/components/schemas/RequestTokenFields"
+        }, {
+          "type" : "object",
+          "required" : [ "amount", "currency", "merchantType" ],
+          "properties" : {
+            "amount" : {
+              "$ref" : "#/components/schemas/RefundRequestAmount"
+            },
+            "tipAmount" : {
+              "$ref" : "#/components/schemas/RefundRequestTipAmount"
+            },
+            "cashAmount" : {
+              "$ref" : "#/components/schemas/RefundRequestCashAmount"
+            },
+            "surchargeAmount" : {
+              "$ref" : "#/components/schemas/RefundRequestSurchargeAmount"
+            },
+            "currency" : {
+              "$ref" : "#/components/schemas/Currency"
+            }
+          }
+        } ]
+      },
+      "RefundResponse" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/CommonResponseFields"
+        }, {
+          "$ref" : "#/components/schemas/ForeignExchangeFields"
+        }, {
+          "$ref" : "#/components/schemas/ResponseTokenFields"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "amount" : {
+              "$ref" : "#/components/schemas/RefundResponseAmount"
+            },
+            "surchargeAmount" : {
+              "$ref" : "#/components/schemas/RefundResponseSurchargeAmount"
+            },
+            "authID" : {
+              "$ref" : "#/components/schemas/ResponseAuthId"
+            },
+            "posEntry" : {
+              "$ref" : "#/components/schemas/PosEntry"
+            },
+            "receiptString" : {
+              "$ref" : "#/components/schemas/ReceiptString"
+            }
+          }
+        } ]
+      },
+      "AuthRequest" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/CommonRequestFields"
+        }, {
+          "$ref" : "#/components/schemas/CommonOptionalFields"
+        }, {
+          "$ref" : "#/components/schemas/RequestTokenFields"
+        }, {
+          "type" : "object",
+          "required" : [ "amount", "currency", "merchantNo", "merchantType" ],
+          "properties" : {
+            "amount" : {
+              "$ref" : "#/components/schemas/Amount"
+            },
+            "currency" : {
+              "$ref" : "#/components/schemas/Currency"
+            }
+          }
+        } ]
+      },
+      "AuthResponse" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/CommonResponseFields"
+        }, {
+          "$ref" : "#/components/schemas/ForeignExchangeFields"
+        }, {
+          "$ref" : "#/components/schemas/ResponseTokenFields"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "authID" : {
+              "$ref" : "#/components/schemas/ResponseAuthId"
+            },
+            "receiptString" : {
+              "$ref" : "#/components/schemas/ReceiptString"
+            }
+          }
+        } ]
+      },
+      "SaleRequest" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/CommonRequestFields"
+        }, {
+          "$ref" : "#/components/schemas/CommonOptionalFields"
+        }, {
+          "$ref" : "#/components/schemas/RequestTokenFields"
+        }, {
+          "type" : "object",
+          "required" : [ "amount", "currency", "merchantType" ],
+          "properties" : {
+            "amount" : {
+              "$ref" : "#/components/schemas/Amount"
+            },
+            "tipAmount" : {
+              "$ref" : "#/components/schemas/RequestTipAmount"
+            },
+            "surchargeAmount" : {
+              "$ref" : "#/components/schemas/RequestSurchargeAmount"
+            },
+            "currency" : {
+              "$ref" : "#/components/schemas/Currency"
+            }
+          }
+        } ]
+      },
+      "SaleResponse" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/CommonResponseFields"
+        }, {
+          "$ref" : "#/components/schemas/ForeignExchangeFields"
+        }, {
+          "$ref" : "#/components/schemas/ResponseTokenFields"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "tipAmount" : {
+              "$ref" : "#/components/schemas/ResponseTipAmount"
+            },
+            "surchargeAmount" : {
+              "$ref" : "#/components/schemas/ResponseSurchargeAmount"
+            },
+            "authID" : {
+              "$ref" : "#/components/schemas/ResponseAuthId"
+            },
+            "posEntry" : {
+              "$ref" : "#/components/schemas/PosEntry"
+            },
+            "receiptString" : {
+              "$ref" : "#/components/schemas/ReceiptString"
+            }
+          }
+        } ]
+      },
+      "AuthTopUpRequest" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/CommonRequestFields"
+        }, {
+          "$ref" : "#/components/schemas/CommonOptionalFields"
+        }, {
+          "$ref" : "#/components/schemas/RequestTokenFields"
+        }, {
+          "type" : "object",
+          "required" : [ "amount", "currency", "tokenCode", "cardExpiry", "maskedPAN", "cardType", "originalRef", "authID", "merchantType" ],
+          "properties" : {
+            "amount" : {
+              "$ref" : "#/components/schemas/OriginalAuthAmount"
+            },
+            "currency" : {
+              "$ref" : "#/components/schemas/Currency"
+            },
+            "originalRef" : {
+              "$ref" : "#/components/schemas/OriginalRef"
+            },
+            "authID" : {
+              "$ref" : "#/components/schemas/RequestAuthId"
+            }
+          }
+        } ]
+      },
+      "AuthTopUpResponse" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/CommonResponseFields"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "authID" : {
+              "$ref" : "#/components/schemas/ResponseAuthId"
+            },
+            "receiptString" : {
+              "$ref" : "#/components/schemas/ReceiptString"
+            }
+          }
+        } ]
+      },
+      "AuthReleaseRequest" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/CommonRequestFields"
+        }, {
+          "$ref" : "#/components/schemas/RequestTokenFields"
+        }, {
+          "type" : "object",
+          "required" : [ "amount", "currency", "merchantType", "originalRef", "authID", "tokenCode", "cardType", "maskedPAN", "cardExpiry" ],
+          "properties" : {
+            "amount" : {
+              "$ref" : "#/components/schemas/OriginalAuthAmount"
+            },
+            "originalRef" : {
+              "$ref" : "#/components/schemas/OriginalRef"
+            },
+            "authID" : {
+              "$ref" : "#/components/schemas/RequestAuthId"
+            },
+            "currency" : {
+              "$ref" : "#/components/schemas/Currency"
+            },
+            "originalAmount" : {
+              "$ref" : "#/components/schemas/OriginalAmount"
+            }
+          }
+        } ]
+      },
+      "AuthReleaseResponse" : {
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/CommonResponseFields"
+        }, {
+          "$ref" : "#/components/schemas/ResponseTokenFields"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "receiptString" : {
+              "$ref" : "#/components/schemas/ReceiptString"
+            }
+          }
+        } ]
+      },
+      "AuthCaptureRequest" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/CommonRequestFields"
+        }, {
+          "$ref" : "#/components/schemas/CommonOptionalFields"
+        }, {
+          "$ref" : "#/components/schemas/RequestTokenFields"
+        }, {
+          "type" : "object",
+          "required" : [ "amount", "currency", "merchantNo", "tokenCode", "cardExpiry", "maskedPAN", "cardType", "originalRef", "authID", "merchantType" ],
+          "properties" : {
+            "amount" : {
+              "$ref" : "#/components/schemas/Amount"
+            },
+            "currency" : {
+              "$ref" : "#/components/schemas/Currency"
+            },
+            "originalRef" : {
+              "$ref" : "#/components/schemas/OriginalRef"
+            },
+            "authID" : {
+              "$ref" : "#/components/schemas/RequestAuthId"
+            }
+          }
+        } ]
+      },
+      "AuthCaptureResponse" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/CommonResponseFields"
+        }, {
+          "$ref" : "#/components/schemas/ForeignExchangeFields"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "receiptString" : {
+              "$ref" : "#/components/schemas/ReceiptString"
+            }
+          }
+        } ]
+      },
+      "VoidRequest" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/CommonRequestFields"
+        }, {
+          "$ref" : "#/components/schemas/RequestTokenFields"
+        }, {
+          "type" : "object",
+          "required" : [ "originalRef", "originalAmount", "currency", "merchantType", "tokenCode", "cardType", "maskedPAN", "cardExpiry" ],
+          "properties" : {
+            "originalRef" : {
+              "$ref" : "#/components/schemas/OriginalRef"
+            },
+            "currency" : {
+              "$ref" : "#/components/schemas/Currency"
+            },
+            "originalAmount" : {
+              "$ref" : "#/components/schemas/OriginalAmount"
+            }
+          }
+        } ]
+      },
+      "VoidResponse" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/CommonResponseFields"
+        }, {
+          "$ref" : "#/components/schemas/ResponseTokenFields"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "receiptString" : {
+              "$ref" : "#/components/schemas/ReceiptString"
+            }
+          }
+        } ]
+      },
+      "SettlementRequest" : {
+        "type" : "object",
+        "required" : [ "messageNo", "messageType", "dateTime", "ippiVersion", "merchantNo", "stationID" ],
+        "properties" : {
+          "messageNo" : {
+            "$ref" : "#/components/schemas/MessageNo"
+          },
+          "messageType" : {
+            "$ref" : "#/components/schemas/MessageType"
+          },
+          "dateTime" : {
+            "$ref" : "#/components/schemas/DateTime"
+          },
+          "ippiVersion" : {
+            "$ref" : "#/components/schemas/IppiVersion"
+          },
+          "merchantNo" : {
+            "$ref" : "#/components/schemas/MerchantNo"
+          },
+          "stationID" : {
+            "$ref" : "#/components/schemas/StationID"
+          },
+          "posSoftware" : {
+            "$ref" : "#/components/schemas/PosSoftware"
+          }
+        }
+      },
+      "SettlementResponse" : {
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/CommonResponseFields"
+        } ],
+        "required" : [ "mid", "tid" ]
+      },
+      "TokenRequest" : {
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/CommonRequestFields"
+        } ]
+      },
+      "TokenResponse" : {
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/CommonResponseFields"
+        }, {
+          "$ref" : "#/components/schemas/ResponseTokenFields"
+        } ]
+      },
+      "ReversalRequest" : {
+        "type" : "object",
+        "required" : [ "messageNo", "messageType", "amount", "currency", "dateTime", "originalType", "originalDateTime", "originalMessageNo", "ippiVersion", "merchantNo", "stationID", "merchantType" ],
+        "properties" : {
+          "messageNo" : {
+            "$ref" : "#/components/schemas/MessageNo"
+          },
+          "messageType" : {
+            "$ref" : "#/components/schemas/MessageType"
+          },
+          "amount" : {
+            "$ref" : "#/components/schemas/OriginalAmount"
+          },
+          "currency" : {
+            "$ref" : "#/components/schemas/Currency"
+          },
+          "dateTime" : {
+            "$ref" : "#/components/schemas/DateTime"
+          },
+          "originalType" : {
+            "$ref" : "#/components/schemas/MessageType"
+          },
+          "originalDateTime" : {
+            "$ref" : "#/components/schemas/OriginalDateTime"
+          },
+          "originalMessageNo" : {
+            "$ref" : "#/components/schemas/OriginalMessageNo"
+          },
+          "ippiVersion" : {
+            "$ref" : "#/components/schemas/IppiVersion"
+          },
+          "merchantNo" : {
+            "$ref" : "#/components/schemas/MerchantNo"
+          },
+          "stationID" : {
+            "$ref" : "#/components/schemas/StationID"
+          },
+          "merchantType" : {
+            "$ref" : "#/components/schemas/MerchantType"
+          },
+          "posSoftware" : {
+            "$ref" : "#/components/schemas/PosSoftware"
+          }
+        }
+      },
+      "ReversalResponse" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/CommonResponseFields"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "receiptString" : {
+              "$ref" : "#/components/schemas/ReceiptString"
+            }
+          }
+        } ]
+      }
+    }
+  }
+}
